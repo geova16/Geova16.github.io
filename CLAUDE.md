@@ -40,10 +40,10 @@ Endereço final: https://geova16.github.io (repositório público `Geova16.githu
 - Textos escritos a partir do meu CV, ainda sem detalhes novos. Capas dos projetos são
   diagramas provisórios em `src/content/projects/_images/`, para trocar por fotos reais.
 - Estágio na EDF: só publicar o que já está no CV até a EDF confirmar o que pode ir para o site.
-- 20/11: sessão 01 feita (site roda com `npm run dev`; projeto em `Documents\Site`, git iniciado
-  na `main`, nada commitado ainda). Sessão 03: apresentação da home reescrita nas 3 línguas
-  (mais concreta: EDF, flyback, FarmBot), aguardando revisão. Sessão 02 pendente: criar o
-  repositório no GitHub, configurar nome/e-mail noreply do Git, commit e push.
+- 20/11: sessões 01–03 feitas. Projeto em `Documents\Site`; Git assina com o e-mail noreply
+  do GitHub. Repositório público `geova16/Geova16.github.io`, Pages via GitHub Actions;
+  site no ar em https://geova16.github.io. Apresentação da home reescrita nas 3 línguas
+  (mais concreta: EDF, flyback, FarmBot), aguardando revisão.
 
 ## Plano (3 sessões de 2h por semana; detalhes de cada sessão no meu Google Agenda)
 
