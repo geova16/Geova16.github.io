@@ -1,0 +1,44 @@
+---
+// A "moldura" de todas as páginas com menu: <head>, cabeçalho, conteúdo, rodapé.
+// Cada página em src/pages/[lang]/ coloca o seu conteúdo dentro de <Base>...</Base>,
+// e ele entra no lugar do <slot />.
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { languages, langCodes, type Lang } from '../site.config';
+import { useTranslations } from '../i18n/ui';
+import { href, pathWithoutLang } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  // Só para páginas de projeto/artigo: onde está a tradução em cada língua.
+  translations?: Partial<Record<Lang, string>>;
+}
+
+const { lang, title, description, translations = {} } = Astro.props;
+const t = useTranslations(lang);
+
+// Por padrão, a mesma página nas outras línguas é o mesmo caminho
+// com a sigla trocada: /pt/blog/ → /fr/blog/
+const rest = pathWithoutLang(Astro.url.pathname);
+const alternates = Object.fromEntries(
+  langCodes.map((code) => [code, translations[code] ?? href(`/${code}${rest}`)]),
+) as Record<Lang, string>;
+---
+
+<!doctype html>
+<html lang={languages[lang].html}>
+  <head>
+    <Head title={title} description={description} alternates={alternates} />
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">{t('skip')}</a>
+    <Header lang={lang} alternates={alternates} />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

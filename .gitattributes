@@ -1,0 +1,3 @@
+# Guarda todos os arquivos de texto com fim de linha LF (padrão do Linux/GitHub)
+* text=auto eol=lf
+*.png binary

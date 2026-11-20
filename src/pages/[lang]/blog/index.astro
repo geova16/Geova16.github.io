@@ -1,0 +1,43 @@
+---
+// LISTA DE ARTIGOS DO BLOG (/pt/blog/ etc.), do mais recente ao mais antigo.
+import Base from '../../../layouts/Base.astro';
+import { langCodes, type Lang } from '../../../site.config';
+import { useTranslations } from '../../../i18n/ui';
+import { getPosts, splitId, formatDate } from '../../../lib/content';
+import { href } from '../../../lib/paths';
+
+export function getStaticPaths() {
+  return langCodes.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const posts = await getPosts(lang);
+---
+
+<Base lang={lang} title={t('blog.title')} description={t('blog.description')}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{t('blog.title')}</h1>
+      <p class="page-head__lead">{t('blog.description')}</p>
+    </header>
+
+    {
+      posts.length === 0 ? (
+        <p class="empty">{t('blog.empty')}</p>
+      ) : (
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li>
+              <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date, lang)}</time>
+              <h2>
+                <a href={href(`/${lang}/blog/${splitId(post.id).slug}/`)}>{post.data.title}</a>
+              </h2>
+              <p>{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</Base>

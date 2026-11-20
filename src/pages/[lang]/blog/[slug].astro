@@ -1,0 +1,42 @@
+---
+// PÁGINA DE UM ARTIGO. Uma página para cada arquivo em src/content/blog/<língua>/.
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { langCodes, type Lang } from '../../../site.config';
+import { useTranslations } from '../../../i18n/ui';
+import { getPosts, splitId, findTranslations, formatDate } from '../../../lib/content';
+import { href } from '../../../lib/paths';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of langCodes) {
+    for (const post of await getPosts(lang)) {
+      paths.push({ params: { lang, slug: splitId(post.id).slug }, props: { post } });
+    }
+  }
+  return paths;
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const { post } = Astro.props;
+const { Content } = await render(post);
+const translations = await findTranslations('blog', splitId(post.id).slug);
+---
+
+<Base lang={lang} title={post.data.title} description={post.data.description} translations={translations}>
+  <article class="wrap">
+    <header class="page-head">
+      <h1>{post.data.title}</h1>
+      <p class="page-head__meta">
+        <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date, lang)}</time>
+      </p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <p class="back"><a href={href(`/${lang}/blog/`)}>{t('blog.back')}</a></p>
+  </article>
+</Base>

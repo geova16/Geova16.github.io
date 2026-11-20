@@ -1,0 +1,28 @@
+---
+// A "assinatura" visual do site: uma onda quadrada (sinal digital, PWM)
+// que vira uma senoide (energia). É um desenho SVG gerado por este código.
+// Para mudar a cor ou a espessura, veja ".wave" em src/styles/global.css.
+
+const mid = 24; // linha central (o desenho tem 48 de altura)
+const amp = 16; // amplitude
+
+// 1) Onda quadrada: 3 períodos de 60 unidades.
+//    O último degrau desce só até a linha central, para emendar na senoide.
+let d = `M0 ${mid + amp}`;
+for (let i = 0; i < 3; i++) {
+  const x = i * 60;
+  const end = i < 2 ? mid + amp : mid;
+  d += ` H${x + 30} V${mid - amp} H${x + 60} V${end}`;
+}
+
+// 2) Senoide: meias-ondas de 45 unidades até o fim do desenho
+const start = 195;
+d += ` H${start} Q${start + 22.5} ${mid - 2 * amp} ${start + 45} ${mid}`;
+for (let x = start + 90; x <= 1200 + 45; x += 45) {
+  d += ` T${x} ${mid}`;
+}
+---
+
+<svg class="wave" viewBox="0 0 1200 48" preserveAspectRatio="xMinYMid slice" aria-hidden="true">
+  <path d={d} pathLength="1"></path>
+</svg>

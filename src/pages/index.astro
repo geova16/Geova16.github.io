@@ -1,0 +1,35 @@
+---
+// PÁGINA DE ENTRADA (endereço "/"): só a escolha de língua.
+// Dica: no CV em francês, aponte direto para /fr/; no CV em inglês, para /en/.
+// Assim o recrutador já cai na língua certa e pula esta página.
+import Head from '../components/Head.astro';
+import Wave from '../components/Wave.astro';
+import { site, languages, langCodes, type Lang } from '../site.config';
+import { href } from '../lib/paths';
+
+const alternates = Object.fromEntries(langCodes.map((code) => [code, href(`/${code}/`)])) as Record<Lang, string>;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head description="Portfólio · Portfolio — Geová Araujo" alternates={alternates} />
+  </head>
+  <body>
+    <main class="gate wrap">
+      <p class="gate__name">{site.name}</p>
+      <ul class="gate__langs">
+        {
+          langCodes.map((code) => (
+            <li>
+              <a href={alternates[code]} hreflang={languages[code].html} lang={languages[code].html}>
+                {languages[code].label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Wave />
+    </main>
+  </body>
+</html>

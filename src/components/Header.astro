@@ -1,0 +1,64 @@
+---
+// Cabeçalho: seu nome (leva à página inicial), o menu e o seletor de língua.
+// Para adicionar ou tirar um item do menu, edite a lista "menu" abaixo
+// (e crie o texto correspondente em src/i18n/ui.ts).
+import { site, languages, langCodes, type Lang } from '../site.config';
+import { useTranslations, type UiKey } from '../i18n/ui';
+import { href, pathWithoutLang } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+  alternates: Record<Lang, string>;
+}
+
+const { lang, alternates } = Astro.props;
+const t = useTranslations(lang);
+const current = pathWithoutLang(Astro.url.pathname);
+
+const menu: { key: UiKey; path: string }[] = [
+  { key: 'nav.projects', path: '/projects/' },
+  { key: 'nav.blog', path: '/blog/' },
+  { key: 'nav.cv', path: '/cv/' },
+  { key: 'nav.hobbies', path: '/hobbies/' },
+];
+---
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href={href(`/${lang}/`)}>{site.name}</a>
+
+    <nav class="site-nav" aria-label={t('nav.label')}>
+      <ul>
+        {
+          menu.map((item) => (
+            <li>
+              <a href={href(`/${lang}${item.path}`)} aria-current={current.startsWith(item.path) ? 'page' : undefined}>
+                {t(item.key)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav class="lang-switch" aria-label={t('lang.label')}>
+      <ul>
+        {
+          langCodes.map((code) => (
+            <li>
+              <a
+                href={alternates[code]}
+                hreflang={languages[code].html}
+                lang={languages[code].html}
+                title={languages[code].label}
+                aria-current={code === lang ? 'true' : undefined}
+              >
+                {languages[code].short}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

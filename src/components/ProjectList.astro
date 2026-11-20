@@ -1,0 +1,49 @@
+---
+// Lista de projetos (usada na página inicial e na página "Projetos").
+// Cada projeto vira uma linha: imagem de capa à esquerda, texto à direita.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../site.config';
+import { splitId } from '../lib/content';
+import { href } from '../lib/paths';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+  lang: Lang;
+  // Nível do título de cada projeto: h2 na página "Projetos", h3 na inicial
+  heading?: 'h2' | 'h3';
+}
+
+const { projects, lang, heading: Heading = 'h3' } = Astro.props;
+---
+
+<ul class="project-list">
+  {
+    projects.map((project) => {
+      const { data } = project;
+      const where = [data.period, data.context].filter(Boolean).join(', ');
+      return (
+        <li class="project">
+          <div class="project__cover">
+            {data.cover && (
+              <Image
+                src={data.cover}
+                alt={data.coverAlt}
+                widths={[480, 800, 1200]}
+                sizes="(min-width: 48rem) 30rem, 100vw"
+              />
+            )}
+          </div>
+          <div>
+            <Heading class="project__title">
+              <a href={href(`/${lang}/projects/${splitId(project.id).slug}/`)}>{data.title}</a>
+            </Heading>
+            <p class="project__summary">{data.summary}</p>
+            <p class="project__meta">{where}</p>
+            {data.tech.length > 0 && <p class="project__meta">{data.tech.join(', ')}</p>}
+          </div>
+        </li>
+      );
+    })
+  }
+</ul>

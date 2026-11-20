@@ -1,0 +1,24 @@
+---
+// Rodapé: links de contato. Os endereços vêm de src/site.config.ts.
+import { site, type Lang } from '../site.config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useTranslations(Astro.props.lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <p>© {year} {site.name}</p>
+    <ul>
+      <li><a href={site.github}>GitHub</a></li>
+      <li><a href={site.linkedin}>LinkedIn</a></li>
+      {site.email && <li><a href={`mailto:${site.email}`}>{site.email}</a></li>}
+      {site.repo && <li><a href={site.repo}>{t('footer.source')}</a></li>}
+    </ul>
+  </div>
+</footer>

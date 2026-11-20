@@ -1,0 +1,103 @@
+---
+// PÁGINA DE UM PROJETO. O Astro gera uma página para cada arquivo
+// em src/content/projects/<língua>/. O nome do arquivo vira o endereço:
+// src/content/projects/pt/farmbot.md → /pt/projects/farmbot/
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { langCodes, type Lang } from '../../../site.config';
+import { useTranslations } from '../../../i18n/ui';
+import { getProjects, splitId, findTranslations } from '../../../lib/content';
+import { href } from '../../../lib/paths';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of langCodes) {
+    for (const project of await getProjects(lang)) {
+      paths.push({ params: { lang, slug: splitId(project.id).slug }, props: { project } });
+    }
+  }
+  return paths;
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+const translations = await findTranslations('projects', splitId(project.id).slug);
+---
+
+<Base lang={lang} title={data.title} description={data.summary} translations={translations}>
+  <article class="wrap">
+    <header class="page-head">
+      <h1>{data.title}</h1>
+      <p class="page-head__lead">{data.summary}</p>
+    </header>
+
+    {
+      data.cover && (
+        <div class="project-page__cover">
+          <Image src={data.cover} alt={data.coverAlt} widths={[800, 1200, 1600]} sizes="(min-width: 72rem) 68rem, 100vw" />
+        </div>
+      )
+    }
+
+    <div class="project-page__body">
+      <!-- Ficha técnica: vem do cabeçalho (frontmatter) do arquivo .md -->
+      <dl class="facts">
+        <div>
+          <dt>{t('project.period')}</dt>
+          <dd>{data.period}</dd>
+        </div>
+        {
+          data.context && (
+            <div>
+              <dt>{t('project.context')}</dt>
+              <dd>{data.context}</dd>
+            </div>
+          )
+        }
+        {
+          data.role && (
+            <div>
+              <dt>{t('project.role')}</dt>
+              <dd>{data.role}</dd>
+            </div>
+          )
+        }
+        {
+          data.tech.length > 0 && (
+            <div>
+              <dt>{t('project.tech')}</dt>
+              <dd>{data.tech.join(', ')}</dd>
+            </div>
+          )
+        }
+        {
+          data.links.length > 0 && (
+            <div>
+              <dt>{t('project.links')}</dt>
+              <dd>
+                <ul>
+                  {data.links.map((link) => (
+                    <li>
+                      <a href={link.url}>{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+
+      <!-- Texto do projeto: o corpo do arquivo .md -->
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    <p class="back"><a href={href(`/${lang}/projects/`)}>{t('project.back')}</a></p>
+  </article>
+</Base>

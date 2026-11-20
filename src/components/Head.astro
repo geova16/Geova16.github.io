@@ -1,0 +1,37 @@
+---
+// O <head> de todas as páginas: título da aba, descrição para o Google,
+// fontes e CSS. Você raramente vai precisar mexer aqui.
+import '@fontsource-variable/albert-sans';
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/source-serif-4/wght-italic.css';
+import '../styles/global.css';
+import { site, languages, langCodes, type Lang } from '../site.config';
+import { href } from '../lib/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  // Endereço desta mesma página em cada língua (para o Google e o seletor)
+  alternates: Record<Lang, string>;
+}
+
+const { title, description, alternates } = Astro.props;
+const pageTitle = title ? `${title} | ${site.name}` : site.name;
+const absolute = (path: string) => new URL(path, Astro.site).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{pageTitle}</title>
+{description && <meta name="description" content={description} />}
+<link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+<link rel="canonical" href={absolute(Astro.url.pathname)} />
+{langCodes.map((code) => <link rel="alternate" hreflang={languages[code].html} href={absolute(alternates[code])} />)}
+<link rel="alternate" hreflang="x-default" href={absolute(href('/'))} />
+
+<!-- Como o link aparece quando compartilhado (LinkedIn, WhatsApp...) -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:url" content={absolute(Astro.url.pathname)} />

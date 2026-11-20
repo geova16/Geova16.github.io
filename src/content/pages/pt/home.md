@@ -1,0 +1,10 @@
+---
+title: Do circuito ao código.
+description: 'Portfólio de Geová Araujo, estudante de engenharia na Centrale Lille: projetos de sistemas embarcados, eletrônica de potência e energia.'
+---
+
+Sou Geová Araujo, estudante de engenharia na École Centrale de Lille, em duplo diploma com a Universidade Federal do Ceará, onde curso Engenharia Elétrica. Trabalho onde hardware e software se encontram: sistemas embarcados, eletrônica de potência e energia.
+
+Instalei sensores sem fio numa usina nuclear da EDF, simulei um conversor flyback quadrático para veículos elétricos no laboratório GPEC e participei do FarmBot, uma mini-fazenda automatizada que virou artigo publicado.
+
+Procuro um estágio em energia ou sistemas embarcados a partir do verão de 2027.

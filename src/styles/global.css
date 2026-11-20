@@ -1,0 +1,656 @@
+/* ═════════════════════════════════════════════════════════════
+   VISUAL DO SITE INTEIRO
+   Todo o CSS mora neste arquivo. Ele está dividido em blocos:
+     1. Cores e fontes   ← comece por aqui se quiser mudar o visual
+     2. Base (texto, links, imagens)
+     3. Cabeçalho e rodapé
+     4. Página inicial (frase grande, onda, botões)
+     5. Lista de projetos
+     6. Páginas internas (título, texto corrido, ficha do projeto)
+     7. Blog
+     8. CV
+     9. Página de escolha de língua
+   ═════════════════════════════════════════════════════════════ */
+
+/* ── 1. CORES E FONTES ─────────────────────────────────────── */
+:root {
+  --paper: #faf9f5;       /* fundo do site */
+  --paper-deep: #f0eee6;  /* blocos mais escuros (capas vazias, código) */
+  --rule: #dedacd;        /* linhas finas de separação */
+  --ink: #141413;         /* texto principal */
+  --ink-soft: #5e5d59;    /* texto secundário (datas, legendas) */
+  --accent: #c6613f;      /* cor de destaque: a onda e os sublinhados */
+  --accent-ink: #a8492a;  /* destaque mais escuro, legível como texto */
+
+  /* As fontes são instaladas pelo npm (veja package.json) e carregadas
+     em src/components/Head.astro. Para trocar: instale outra fonte de
+     https://fontsource.org, mude o import lá e o nome aqui. */
+  --font-sans: 'Albert Sans Variable', system-ui, sans-serif;   /* títulos e menu */
+  --font-serif: 'Source Serif 4 Variable', Georgia, serif;      /* texto corrido */
+
+  --wrap: 68rem;                          /* largura máxima do conteúdo */
+  --measure: 40rem;                       /* largura máxima do texto corrido */
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);  /* margem lateral */
+}
+
+/* ── 2. BASE ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 550;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0 0 1em;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Link "pular para o conteúdo": só aparece ao navegar pelo teclado */
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -4rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  border-radius: 0.375rem;
+}
+
+.skip:focus {
+  top: 0.75rem;
+  color: var(--paper);
+}
+
+.button {
+  display: inline-block;
+  padding: 0.7em 1.2em;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 0.5rem;
+}
+
+.button:hover {
+  background: var(--accent-ink);
+  color: var(--paper);
+}
+
+/* ── 3. CABEÇALHO E RODAPÉ ─────────────────────────────────── */
+.site-header {
+  padding-block: 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+.site-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 2.5rem;
+}
+
+.brand {
+  margin-right: auto;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.site-nav ul,
+.lang-switch ul {
+  display: flex;
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav a {
+  text-decoration: none;
+}
+
+.site-nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.4em;
+}
+
+.lang-switch ul {
+  gap: 0.875rem;
+}
+
+.lang-switch a {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.lang-switch a:hover {
+  color: var(--accent-ink);
+}
+
+.lang-switch a[aria-current='true'] {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+/* No celular: nome e línguas na primeira linha, menu na segunda */
+@media (max-width: 42rem) {
+  .site-nav {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .site-nav ul {
+    gap: 1.5rem;
+  }
+}
+
+.site-footer {
+  margin-top: clamp(3rem, 8vw, 6rem);
+  padding-block: 2rem 3rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── 4. PÁGINA INICIAL ─────────────────────────────────────── */
+.hero {
+  padding-block: clamp(3rem, 9vw, 6.5rem) clamp(2rem, 5vw, 3.5rem);
+}
+
+.hero h1 {
+  max-width: 12ch;
+  font-size: clamp(3rem, 9vw, 6rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+/* A onda: sinal quadrado (o digital) que vira senoide (a energia).
+   O desenho está em src/components/Wave.astro. */
+.wave {
+  display: block;
+  width: 100%;
+  height: 48px;
+  margin-block: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.wave path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* A onda se desenha uma vez quando a página abre */
+@media (prefers-reduced-motion: no-preference) {
+  .wave path {
+    animation: draw 2.4s cubic-bezier(0.3, 0.6, 0.3, 1) both;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+.hero__intro {
+  max-width: var(--measure);
+  font-size: 1.3125rem;
+  line-height: 1.5;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.75rem;
+  margin: 1.75rem 0 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+.section {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.section__title {
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: 1.5rem;
+}
+
+.section__more {
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+/* ── 5. LISTA DE PROJETOS ──────────────────────────────────── */
+.project-list {
+  display: grid;
+  gap: clamp(2.75rem, 6vw, 4.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project {
+  position: relative;
+  display: grid;
+  gap: 1.25rem 3rem;
+}
+
+@media (min-width: 48rem) {
+  .project {
+    grid-template-columns: 5fr 6fr;
+    align-items: center;
+  }
+}
+
+.project__cover {
+  aspect-ratio: 8 / 5;
+  overflow: hidden;
+  background: var(--paper-deep);
+  border-radius: 0.75rem;
+}
+
+.project__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.project__title a {
+  text-decoration: none;
+}
+
+/* Faz a linha inteira (imagem + texto) ser clicável */
+.project__title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.project:hover .project__title a {
+  color: var(--accent-ink);
+}
+
+.project__summary {
+  max-width: 34rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.project__meta {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* ── 6. PÁGINAS INTERNAS ───────────────────────────────────── */
+.page-head {
+  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.page-head h1 {
+  max-width: 22ch;
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.page-head__lead {
+  max-width: var(--measure);
+  margin: 1.25rem 0 0;
+  font-size: 1.3125rem;
+  line-height: 1.5;
+}
+
+.page-head__meta {
+  margin: 1.25rem 0 0;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+}
+
+.page-head .button {
+  margin-top: 1.75rem;
+}
+
+/* Texto corrido vindo do Markdown */
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
+
+.prose h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-size: 1.625rem;
+}
+
+.prose h3 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1em;
+  padding-left: 1.25em;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose li::marker {
+  color: var(--accent);
+}
+
+.prose img {
+  margin-block: 2rem;
+  border-radius: 0.75rem;
+}
+
+.prose blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+.prose code {
+  padding: 0.1em 0.35em;
+  background: var(--paper-deep);
+  border-radius: 0.25rem;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.prose pre {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.prose hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.back {
+  margin: clamp(3rem, 7vw, 5rem) 0 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+/* Página de um projeto: capa grande, ficha técnica ao lado do texto */
+.project-page__cover {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  overflow: hidden;
+  background: var(--paper-deep);
+  border-radius: 1rem;
+}
+
+/* A capa é cortada numa faixa larga (2:1) para o texto não ficar longe demais.
+   Para mostrar a foto inteira, apague as linhas aspect-ratio e object-fit. */
+.project-page__cover img {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+}
+
+.project-page__body {
+  display: grid;
+  gap: 2.5rem 4rem;
+}
+
+@media (min-width: 60rem) {
+  .project-page__body {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.facts {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.facts dt {
+  color: var(--ink-soft);
+}
+
+.facts dd {
+  margin: 0.15rem 0 0;
+}
+
+.facts ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── 7. BLOG ───────────────────────────────────────────────── */
+.post-list {
+  max-width: 46rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-list li {
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.post-list time {
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+}
+
+.post-list h2 {
+  margin: 0.25rem 0 0.4rem;
+  font-size: 1.5rem;
+}
+
+.post-list h2 a {
+  text-decoration: none;
+}
+
+.post-list p {
+  margin: 0;
+}
+
+.empty {
+  color: var(--ink-soft);
+}
+
+/* ── 8. CV ─────────────────────────────────────────────────── */
+/* No arquivo cv.md: "## " abre uma seção, "### " abre um item,
+   e uma linha em *itálico* logo abaixo do item vira a data. */
+.cv h2 {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 1.25rem;
+}
+
+.cv h3 {
+  margin: 1.75rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.cv h3 + p > em:only-child {
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-style: normal;
+}
+
+.cv h3 + p:has(> em:only-child) {
+  margin-bottom: 0.4em;
+}
+
+/* ── 9. PÁGINA DE ESCOLHA DE LÍNGUA ────────────────────────── */
+.gate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-block: 1.5rem clamp(2rem, 6vw, 4rem);
+}
+
+.gate__name {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.gate__langs {
+  margin: auto 0 0;
+  padding: clamp(3rem, 8vw, 5rem) 0 0;
+  list-style: none;
+}
+
+.gate__langs a {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: clamp(3.25rem, 13vw, 8.5rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-decoration: none;
+}
+
+.gate .wave {
+  margin-bottom: 0;
+}

@@ -1,0 +1,49 @@
+---
+// CV. O texto vem de src/content/pages/<língua>/cv.md.
+//
+// BOTÃO DE DOWNLOAD: coloque o PDF em public/cv/ com o nome cv-pt.pdf,
+// cv-fr.pdf ou cv-en.pdf. Se o arquivo existir, o botão aparece sozinho
+// na página daquela língua; se não existir, o botão fica escondido.
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { site, langCodes, type Lang } from '../../site.config';
+import { useTranslations } from '../../i18n/ui';
+import { getPage } from '../../lib/content';
+import { href } from '../../lib/paths';
+
+export function getStaticPaths() {
+  return langCodes.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const page = await getPage(lang, 'cv');
+const { Content } = await render(page);
+
+// Lista os PDFs que existem em public/cv/ no momento em que o site é gerado
+const pdfsFound = Object.keys(import.meta.glob('/public/cv/*.pdf'));
+const pdfName = `cv-${lang}.pdf`;
+const hasPdf = pdfsFound.some((file) => file.endsWith(`/${pdfName}`));
+// Nome que o arquivo terá no computador de quem baixar (sem acentos nem espaços)
+const plainName = site.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '-');
+const downloadName = `CV-${plainName}-${lang.toUpperCase()}.pdf`;
+---
+
+<Base lang={lang} title={page.data.title} description={page.data.description}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{page.data.title}</h1>
+      {page.data.description && <p class="page-head__lead">{page.data.description}</p>}
+      {
+        hasPdf && (
+          <a class="button" href={href(`/cv/${pdfName}`)} download={downloadName}>
+            {t('cv.download')}
+          </a>
+        )
+      }
+    </header>
+    <div class="prose cv">
+      <Content />
+    </div>
+  </div>
+</Base>

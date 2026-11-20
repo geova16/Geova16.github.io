@@ -1,0 +1,26 @@
+---
+// HOBBIES. O texto vem de src/content/pages/<língua>/hobbies.md.
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { langCodes, type Lang } from '../../site.config';
+import { getPage } from '../../lib/content';
+
+export function getStaticPaths() {
+  return langCodes.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const page = await getPage(lang, 'hobbies');
+const { Content } = await render(page);
+---
+
+<Base lang={lang} title={page.data.title} description={page.data.description}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{page.data.title}</h1>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </div>
+</Base>

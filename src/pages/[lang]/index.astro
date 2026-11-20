@@ -1,0 +1,48 @@
+---
+// PÁGINA INICIAL de cada língua (/pt/, /fr/, /en/).
+// A frase grande e a apresentação vêm de src/content/pages/<língua>/home.md.
+// Os projetos que aparecem aqui são os que têm "featured: true".
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Wave from '../../components/Wave.astro';
+import ProjectList from '../../components/ProjectList.astro';
+import { site, langCodes, type Lang } from '../../site.config';
+import { useTranslations } from '../../i18n/ui';
+import { getPage, getProjects } from '../../lib/content';
+import { href } from '../../lib/paths';
+
+// Diz ao Astro para gerar esta página uma vez por língua.
+export function getStaticPaths() {
+  return langCodes.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+
+const home = await getPage(lang, 'home');
+const { Content } = await render(home);
+const featured = (await getProjects(lang)).filter((project) => project.data.featured);
+---
+
+<Base lang={lang} description={home.data.description}>
+  <section class="hero wrap">
+    <h1>{home.data.title}</h1>
+    <Wave />
+    <div class="hero__intro">
+      <Content />
+    </div>
+    <p class="hero__actions">
+      <a class="button" href={href(`/${lang}/cv/`)}>{t('home.cv')}</a>
+      <a href={site.github}>GitHub</a>
+      <a href={site.linkedin}>LinkedIn</a>
+    </p>
+  </section>
+
+  <section class="section wrap">
+    <h2 class="section__title">{t('home.featured')}</h2>
+    <ProjectList projects={featured} lang={lang} />
+    <p class="section__more">
+      <a href={href(`/${lang}/projects/`)}>{t('home.allProjects')}</a>
+    </p>
+  </section>
+</Base>

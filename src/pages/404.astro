@@ -1,0 +1,29 @@
+---
+// Página de erro: aparece quando alguém abre um endereço que não existe.
+import Head from '../components/Head.astro';
+import { site, languages, langCodes, type Lang } from '../site.config';
+import { href } from '../lib/paths';
+
+const alternates = Object.fromEntries(langCodes.map((code) => [code, href(`/${code}/`)])) as Record<Lang, string>;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title="404" alternates={alternates} />
+  </head>
+  <body>
+    <main class="gate wrap">
+      <p class="gate__name"><a href={href('/')}>{site.name}</a></p>
+      <div class="page-head">
+        <h1>404</h1>
+        <p class="page-head__lead">
+          Página não encontrada. Page introuvable. Page not found.
+        </p>
+        <p class="page-head__meta">
+          {langCodes.map((code) => <><a href={alternates[code]}>{languages[code].label}</a>{' '}</>)}
+        </p>
+      </div>
+    </main>
+  </body>
+</html>
